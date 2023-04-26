@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDAR 17)
 set(M main)
 set(S sort_unite_testing)
 set(T test1)
+set(MF main_functions)
 
 
 #include(FetchContent)

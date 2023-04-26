@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "merge_sort.hpp"
 #include "quicksort.hpp"
-#include "introspectivesort.hpp"
+#include "bucketsort.hpp"
 
 using namespace std;
 
@@ -11,28 +11,26 @@ int main()
 {
     cout << "Project name: SORT" << endl;
 
-    int T[40];
-    for (int i = 0; i < 20; i++)
+    float T[100];// = {1.2, 1.3, 3.4, 5.5, 5.2, 2.1, 2.4, 7.1, 3.7, 10};
+
+    float a = 0;
+
+    for(int i =0; i<100; i++)
     {
-        T[2*i] = i;
-        T[2*i +1] = i;
+        T[i] = a;
+        //cout << T[i] << " ";
+        a += 0.1;
     }
+
     srand(time(0));
-    std::random_shuffle(&T[0], &T[39]);
+    std::random_shuffle(&T[0], &T[99]);
 
-
-    for(int i = 0; i< 40 ; ++i)
+    bucket_sort(T, 100, 10);
+    for (int i=0; i<100 ; i++)
     {
         cout << T[i] << " ";
     }
     cout << endl;
-
-    quicksort<int>(T, 0, 39);
-
-    for (int i = 0; i < 40; i++)
-    {
-        cout << T[i] << " ";
-    }
     
 
     return 0;
@@ -153,3 +151,125 @@ int main()
 
     return 0;
 } */
+
+
+
+/* 
+struct record
+{   
+    // title.basic.tsv.gz
+    std::string title;
+    std::string id;
+
+    // title.ratings.tsv.gz
+    float rating;
+
+    inline record(std::string t = "", float r = 0)
+    {
+        title = t;
+        rating = r;
+    }
+
+    inline void view() const
+    {
+        std::cout << "Title: " << title << ", Rating: " << rating << " Id: "<< id << std::endl;
+    }
+
+    inline bool operator < (record other_record)
+    {
+        return rating < other_record.rating;
+    }
+
+    inline bool operator > (record other_record)
+    {
+        return rating > other_record.rating;
+    }
+
+    inline bool operator == (record other_record)
+    {
+        return rating == other_record.rating;
+    }
+
+    inline bool operator != (int num)
+    {
+        return rating != num;
+    }
+
+    explicit operator int()
+    {
+        return int(rating);
+    }
+};
+
+
+template <typename T>
+void bucket_sort(T* array, int n, int max_value) 
+{
+    T** buckets = new T*[max_value];
+
+    for(int i=0; i<max_value; ++i)
+    {
+        buckets[i] = nullptr;
+    }
+
+    for(int i=0; i<n; ++i)
+    {
+        int iter = array[i];
+        if(buckets[iter] == nullptr)
+        {
+            buckets[iter] = new T[1];
+            buckets[iter][0] = array[i];
+        }
+        else
+        {
+            int length = 0;
+            while(buckets[iter][length] != 0)
+            {
+                length++;
+            }
+            T* tmp = new T[length+1];
+            
+            for(int j=0; j<length; ++j)
+            {
+                tmp[j] = buckets[iter][j];
+            }
+            tmp[length] = array[i];
+            delete[] buckets[iter];
+            buckets[iter] = tmp;
+/*              for(int j=0; j<=length; ++j)
+            {
+                std::cout << buckets[iter][j] << " ";
+            }
+            std::cout << std::endl;  */
+/*         }
+            
+    }
+
+    for(int i=0; i<max_value; ++i)
+    {
+        if(buckets[i] != nullptr)
+        {
+            int size =  sizeof(buckets[i]) / sizeof(buckets[0]);
+            quicksort(buckets[i], 0, size);
+        }
+    }
+
+    int ii=0;
+    for(int i=0; i<max_value; ++i)
+    {
+        if(buckets[i] != nullptr)
+        {
+            int length = 0; 
+            while(buckets[i][length] != 0 && length < n)
+            {
+                array[ii] = buckets[i][length];
+                ++ii;
+                ++length;
+            }
+        delete[] buckets[i];
+        }
+    }
+}
+
+Przy wywołaniu z tablicą dataset1 1000 elementów z ratingami od 0 do 10 w podany sposób występuje segmentation fault.
+bucket_sort(dataset1, size, 10);  */
